@@ -11,6 +11,9 @@ public class CalculateSales
 	public static void main(String[] args)
 	{
 		//if(args.length != 1);
+
+
+		//支店定義ファイル
 		HashMap<String, String> branch = new HashMap<String, String>();
 		try
 		{
@@ -18,15 +21,20 @@ public class CalculateSales
 			String str;
 			while((str = br.readLine()) != null)
 			{
-				String[] SalSpl = str.split(",");
+				String[] braSpl = str.split(",");
 
-				if(SalSpl[0] != "^\\d{3}$")
+//				Pattern p = Pattern.compile("^\\d{3}$");
+//				Matcher m = p.matcher(braSpl[0]);
+//				braSpl[0].matches("^\\d{3}$");
+
+				if(!braSpl[0].matches("^\\d{3}$"))
+
+//				if(!m.find())
 				{
 					System.out.println("支店名義ファイルのフォーマットが不正です");
 				}
 
-
-				branch.put(SalSpl[0], SalSpl[1]);
+				branch.put(braSpl[0], braSpl[1]);
 			}
 			//{
 				//System.out.println(str);
@@ -42,6 +50,7 @@ public class CalculateSales
 		{
 			System.out.println(e);
 		}
+		System.out.println(branch.entrySet());
 
 
 
@@ -54,15 +63,19 @@ public class CalculateSales
 			String s;
 			while((s = br.readLine()) != null)
 			{
-				String[] ComSpl = s.split(",");
+				String[] comSpl = s.split(",");
 
-				if(ComSpl[0] !=  "^\\d{8}$")
+//				Pattern p = Pattern.compile("^\\w{8}$");
+//				Matcher m = p.matcher(comSpl[0]);
+//				if(!m.find())
+
+				if(!comSpl[0].matches("^\\w{8}$"))
 				{
 					System.out.println("商品定義ファイルのフォーマットが不正です");
 				}
 
 
-				commodity.put(ComSpl[0], ComSpl[1]);
+				commodity.put(comSpl[0], comSpl[1]);
 				//System.out.println(s);
 			}
 			br.close();
@@ -75,5 +88,21 @@ public class CalculateSales
 		{
 			System.out.println(e);
 		}
+		System.out.println(commodity.entrySet());
+
+//集計
+		File dir = new File(args[0]);
+		File files[] = dir.listFiles();
+		for(int i = 0; i < files.length; i++)
+		if(files[i].toString().endsWith(".rcd"))
+		{
+			 System.out.println(files[i].getName());
+			 String[] fileSpl = files[i].toString().split("\\.");   
+		}
+
+
+
+
+
 	}
 }
