@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -93,16 +94,26 @@ public class CalculateSales
 //集計
 		File dir = new File(args[0]);
 		File files[] = dir.listFiles();
+
+		
+		ArrayList<Integer> rcdNo = new ArrayList<Integer>();
+		
 		for(int i = 0; i < files.length; i++)
-		if(files[i].toString().endsWith(".rcd"))
 		{
-			 System.out.println(files[i].getName());
-			 String[] fileSpl = files[i].toString().split("\\.");   
+			if(files[i].getName().endsWith(".rcd"))
+			{
+				String[] fileSpl = files[i].getName().toString().split("\\.");
+				//rcdNo.add( new Integer(fileSpl[0]).intValue());
+				int j = Integer.parseInt(fileSpl[0]);
+				
+				rcdNo.add(j);
+				//System.out.println(rcdNo);
+				if(j - 1 != i)
+				{
+					System.out.println("売上ファイル名が連番になっていません");
+				}
+			}
 		}
-
-
-
-
-
+		System.out.println(rcdNo);
 	}
 }
