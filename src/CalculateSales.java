@@ -124,8 +124,8 @@ public class CalculateSales
 			}
 		}
 		System.out.println(rcdList);
-		
 
+//加算処理
 		try
 		{
 			for(int k = 0; k < rcdList.size(); k++)
@@ -138,17 +138,25 @@ public class CalculateSales
 				{
 					inrcdFile.add(sale);
 				}
-				//System.out.println(inrcdFile.get(0));
-				//System.out.println(inrcdFile.get(1));
-				//System.out.println(inrcdFile.get(2));
-				
+				System.out.println(inrcdFile.get(0));
+				System.out.println(inrcdFile.get(1));
+				System.out.println(inrcdFile.get(2));
+
 				long l = Long.parseLong(inrcdFile.get(2));
-				
-				System.out.println(l);
-				
+
+				long bratotal = l + braSum.get(inrcdFile.get(0));
+				long comtotal = l + comSum.get(inrcdFile.get(1));
+			
+				braSum.put(inrcdFile.get(0), bratotal);
+				comSum.put(inrcdFile.get(1), comtotal);
+
+				//System.out.println(l);
+
 
 
 			br.close();
+			System.out.println(braSum.entrySet());
+			System.out.println(comSum.entrySet());
 			System.out.println("^^^^^^");
 			}
 
