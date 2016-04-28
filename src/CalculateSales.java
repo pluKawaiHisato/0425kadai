@@ -11,7 +11,8 @@ public class CalculateSales
 {
 	public static void main(String[] args)
 	{
-		//if(args.length != 1);
+		HashMap<String, Long> braSum = new HashMap<String, Long>();
+		HashMap<String, Long> comSum = new HashMap<String, Long>();
 
 
 		//支店定義ファイル
@@ -36,6 +37,7 @@ public class CalculateSales
 				}
 
 				branch.put(braSpl[0], braSpl[1]);
+				braSum.put(braSpl[0], 0L);
 			}
 			//{
 				//System.out.println(str);
@@ -52,6 +54,7 @@ public class CalculateSales
 			System.out.println(e);
 		}
 		System.out.println(branch.entrySet());
+		System.out.println(braSum.entrySet());
 
 
 
@@ -77,6 +80,7 @@ public class CalculateSales
 
 
 				commodity.put(comSpl[0], comSpl[1]);
+				comSum.put(comSpl[0], 0L);
 				//System.out.println(s);
 			}
 			br.close();
@@ -90,14 +94,15 @@ public class CalculateSales
 			System.out.println(e);
 		}
 		System.out.println(commodity.entrySet());
+		System.out.println(comSum.entrySet());
 
 //集計
 		File dir = new File(args[0]);
 		File files[] = dir.listFiles();
 
-		
-		ArrayList<Integer> rcdNo = new ArrayList<Integer>();
-		
+
+		ArrayList<File> rcdList = new ArrayList<File>();
+
 		for(int i = 0; i < files.length; i++)
 		{
 			if(files[i].getName().endsWith(".rcd"))
@@ -105,15 +110,52 @@ public class CalculateSales
 				String[] fileSpl = files[i].getName().toString().split("\\.");
 				//rcdNo.add( new Integer(fileSpl[0]).intValue());
 				int j = Integer.parseInt(fileSpl[0]);
-				
-				rcdNo.add(j);
+
+
 				//System.out.println(rcdNo);
-				if(j - 1 != i)
+				if(j - 1 == i)
+				{
+					rcdList.add(files[i]);
+				}
+				else
 				{
 					System.out.println("売上ファイル名が連番になっていません");
 				}
 			}
 		}
-		System.out.println(rcdNo);
+		System.out.println(rcdList);
+		
+
+		try
+		{
+			for(int k = 0; k < rcdList.size(); k++)
+			{
+				String listStr = rcdList.get(k).toString();
+				BufferedReader br = new BufferedReader(new FileReader(new File(listStr)));
+				String sale;
+				ArrayList<String> inrcdFile= new ArrayList<String>();
+				while((sale = br.readLine()) !=null)
+				{
+					inrcdFile.add(sale);
+				}
+				//System.out.println(inrcdFile.get(0));
+				//System.out.println(inrcdFile.get(1));
+				//System.out.println(inrcdFile.get(2));
+				
+				long l = Long.parseLong(inrcdFile.get(2));
+				
+				System.out.println(l);
+				
+
+
+			br.close();
+			System.out.println("^^^^^^");
+			}
+
+		}
+		catch(IOException e)
+		{
+			System.out.println(e);
+		}
 	}
 }
