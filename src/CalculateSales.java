@@ -17,6 +17,7 @@ public class CalculateSales
 
 		//支店定義ファイル
 		HashMap<String, String> branch = new HashMap<String, String>();
+		
 		try
 		{
 			BufferedReader br = new BufferedReader(new FileReader(new File (args[0] , "branch.lst")));
@@ -151,20 +152,20 @@ public class CalculateSales
 //加算処理
 		try
 		{
-			for(int k = 0; k < rcdList.size(); k++)
+			for(int i = 0; i < rcdList.size(); i++)
 			{
-				String listStr = rcdList.get(k).toString();
+				String listStr = rcdList.get(i).toString();
 				BufferedReader br = new BufferedReader(new FileReader(new File(listStr)));
 				String sale;
-				ArrayList<String> inrcdFile= new ArrayList<String>();
+				ArrayList<String> contensOfrcdFile= new ArrayList<String>();
 				while((sale = br.readLine()) !=null)
 				{
-					inrcdFile.add(sale);
+					contensOfrcdFile.add(sale);
 				}
 				
-				if(inrcdFile.size() != 3)
+				if(contensOfrcdFile.size() != 3)
 				{
-					System.out.println(rcdList.get(k).getName() + "のフォーマットが不正です");
+					System.out.println(rcdList.get(i).getName() + "のフォーマットが不正です");
 					br.close();
 					return;
 				}
@@ -173,39 +174,55 @@ public class CalculateSales
 				//System.out.println(rcdList.get(k));
 				//System.out.println(rcdList.get(k).getName());
 
-				System.out.println(inrcdFile.get(0));//=支店コード
-				System.out.println(inrcdFile.get(1));//=商品コード
-				System.out.println(inrcdFile.get(2));//=売上額
+				System.out.println(contensOfrcdFile.get(0));//=支店コード
+				System.out.println(contensOfrcdFile.get(1));//=商品コード
+				System.out.println(contensOfrcdFile.get(2));//=売上額
 
 				//if()
 
-				long l = Long.parseLong(inrcdFile.get(2));
+				long l = Long.parseLong(contensOfrcdFile.get(2));
+				 
+				if(!braSum.containsKey(contensOfrcdFile.get(0)))
+				{
+					System.out.println(rcdList.get(i).getName() + "の支店コードが不正です");
+					br.close();
+					return;
+				}
+				
+				if(!comSum.containsKey(contensOfrcdFile.get(1)))
+				{
+					System.out.println(rcdList.get(i).getName() + "商品のコードが不正です");
+					br.close();
+					return;
+				}
+				
+				long bratotal = l + braSum.get(contensOfrcdFile.get(0));
+				long comtotal = l + comSum.get(contensOfrcdFile.get(1));
 
-				long bratotal = l + braSum.get(inrcdFile.get(0));
-				long comtotal = l + comSum.get(inrcdFile.get(1));
-
-				braSum.put(inrcdFile.get(0), bratotal);
-				comSum.put(inrcdFile.get(1), comtotal);
+				braSum.put(contensOfrcdFile.get(0), bratotal);
+				comSum.put(contensOfrcdFile.get(1), comtotal);
 
 //10桁を超えた場合のエラー処理
-				int sbt = String.valueOf(bratotal).length();
-				if(sbt > 10)
+				String sbt = String.valueOf(bratotal);
+				if(sbt.length() > 10)
 				{
-					System.out.println(inrcdFile.get(0) + "は合計金額が10桁を超えました");
+					System.out.println(contensOfrcdFile.get(0) + "は合計金額が10桁を超えました");
 					br.close();
 					return;
 				}
 
-				int sct = String.valueOf(comtotal).length();
-				if(sct > 10)
+				String sct = String.valueOf(comtotal);
+				if(sct.length() > 10)
 				{
-					System.out.println(inrcdFile.get(1) + "は合計金額が10桁を超えました");
+					System.out.println(contensOfrcdFile.get(1) + "は合計金額が10桁を超えました");
 					br.close();
 					return;
 				}
+				
+				
 
 
-				//System.out.println(l);
+				
 
 
 
