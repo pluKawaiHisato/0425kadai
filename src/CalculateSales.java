@@ -1,10 +1,17 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 public class CalculateSales
@@ -14,10 +21,9 @@ public class CalculateSales
 		HashMap<String, Long> braSum = new HashMap<String, Long>();
 		HashMap<String, Long> comSum = new HashMap<String, Long>();
 
-
-		//支店定義ファイル
+//支店定義ファイル
 		HashMap<String, String> branch = new HashMap<String, String>();
-		
+
 		try
 		{
 			BufferedReader br = new BufferedReader(new FileReader(new File (args[0] , "branch.lst")));
@@ -26,13 +32,7 @@ public class CalculateSales
 			{
 				String[] braSpl = str.split(",");
 
-//				Pattern p = Pattern.compile("^\\d{3}$");
-//				Matcher m = p.matcher(braSpl[0]);
-//				braSpl[0].matches("^\\d{3}$");
-
 				if(!braSpl[0].matches("^\\d{3}$"))
-
-//				if(!m.find())
 				{
 					System.out.println("支店名義ファイルのフォーマットが不正です");
 					br.close();
@@ -45,10 +45,6 @@ public class CalculateSales
 
 				}
 			}
-			//{
-				//System.out.println(str);
-			//}
-
 			br.close();
 		}
 		catch(FileNotFoundException e)
@@ -63,9 +59,6 @@ public class CalculateSales
 		System.out.println(branch.entrySet());
 		System.out.println(braSum.entrySet());
 
-
-
-
 //商品定義ファイル
 		HashMap<String, String> commodity = new HashMap<String, String>();
 		try
@@ -75,10 +68,6 @@ public class CalculateSales
 			while((s = br.readLine()) != null)
 			{
 				String[] comSpl = s.split(",");
-
-//				Pattern p = Pattern.compile("^\\w{8}$");
-//				Matcher m = p.matcher(comSpl[0]);
-//				if(!m.find())
 
 				if(!comSpl[0].matches("^\\w{8}$"))
 				{
@@ -130,10 +119,6 @@ public class CalculateSales
 					System.out.println(files[i] + "は売上ファイル名が8桁ではありません");
 					return;
 				}
-				//rcdNo.add( new Integer(fileSpl[0]).intValue());
-
-
-
 
 //連番処理
 				if(j - 1 == i)
@@ -162,7 +147,7 @@ public class CalculateSales
 				{
 					contensOfrcdFile.add(sale);
 				}
-				
+
 				if(contensOfrcdFile.size() != 3)
 				{
 					System.out.println(rcdList.get(i).getName() + "のフォーマットが不正です");
@@ -170,32 +155,27 @@ public class CalculateSales
 					return;
 				}
 
-				//System.out.println(listStr);
-				//System.out.println(rcdList.get(k));
-				//System.out.println(rcdList.get(k).getName());
-
 				System.out.println(contensOfrcdFile.get(0));//=支店コード
 				System.out.println(contensOfrcdFile.get(1));//=商品コード
-				System.out.println(contensOfrcdFile.get(2));//=売上額
-
-				//if()
+				System.out.println(contensOfrcdFile.get(2));//=売上金額
 
 				long l = Long.parseLong(contensOfrcdFile.get(2));
-				 
+
+//コード不正時のエラー処理
 				if(!braSum.containsKey(contensOfrcdFile.get(0)))
 				{
 					System.out.println(rcdList.get(i).getName() + "の支店コードが不正です");
 					br.close();
 					return;
 				}
-				
+
 				if(!comSum.containsKey(contensOfrcdFile.get(1)))
 				{
 					System.out.println(rcdList.get(i).getName() + "商品のコードが不正です");
 					br.close();
 					return;
 				}
-				
+
 				long bratotal = l + braSum.get(contensOfrcdFile.get(0));
 				long comtotal = l + comSum.get(contensOfrcdFile.get(1));
 
@@ -218,24 +198,107 @@ public class CalculateSales
 					br.close();
 					return;
 				}
-				
-				
-
-
-				
-
-
-
 				br.close();
-				System.out.println(braSum.entrySet());
-				System.out.println(comSum.entrySet());
-				System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 			}
-
 		}
 		catch(IOException e)
 		{
 			System.out.println(e);
 		}
+		System.out.println(braSum.entrySet());
+		System.out.println(comSum.entrySet());
+		//System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+
+//支店別集計ファイルの出力
+		File branchOutFile = new File(args[0],"\\branch.out");
+		try
+		{
+			branchOutFile.createNewFile();
+			BufferedWriter bw = new BufferedWriter(new FileWriter(branchOutFile));
+
+			List<Map.Entry<String,Long>> branchSumEntries =
+					new ArrayList<Map.Entry<String,Long>>(braSum.entrySet());
+			Collections.sort(branchSumEntries, new Comparator<Map.Entry<String,Long>>()
+			{
+				@Override
+				public int compare(Entry<String,Long> entry1, Entry<String,Long> entry2)
+				{
+					return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
+				}
+			});
+			
+			for(Entry<String, Long> b : branchSumEntries)
+			{
+				bw.write(b.getKey() + "," + branch.get(b.getKey()) + "," + b.getValue());
+				bw.newLine();
+			}
+			bw.close();
+		}
+		catch(IOException e)
+		{
+			System.out.println(e);
+		}
+		
+//商品別集計ファイルの出力
+		File commodityOutFile = new File(args[0], "\\commodity.out");
+		try
+		{
+			commodityOutFile.createNewFile();
+			BufferedWriter bw = new BufferedWriter(new FileWriter(commodityOutFile));
+			
+			List<Map.Entry<String,Long>> commoditySumEntries =
+					new ArrayList<Map.Entry<String,Long>>(comSum.entrySet());
+			Collections.sort(commoditySumEntries, new Comparator<Map.Entry<String,Long>>()
+			{
+				@Override
+				public int compare(Entry<String, Long> entry1, Entry<String, Long> entry2)
+				{
+					return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
+				}
+			});
+			
+			for(Entry<String, Long> c : commoditySumEntries)
+			{
+				bw.write(c.getKey() + "," + commodity.get(c.getKey()) + "," + c.getValue());
+				bw.newLine();
+			}
+			bw.close();
+		}
+		catch(IOException e)
+		{
+			System.out.println(e);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 }
