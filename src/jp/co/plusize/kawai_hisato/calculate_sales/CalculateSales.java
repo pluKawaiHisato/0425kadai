@@ -3,6 +3,7 @@ package jp.co.plusize.kawai_hisato.calculate_sales;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,10 +18,10 @@ import java.util.Map.Entry;
 
 public class CalculateSales
 {
-	public static void main(String[] args)
+	public static void main(String[] args) throws FileNotFoundException
 	{
-		HashMap<String, Long> braSum = new HashMap<String, Long>();
-		HashMap<String, Long> comSum = new HashMap<String, Long>();
+		HashMap<String, Long> branchSumMap = new HashMap<String, Long>();
+		HashMap<String, Long> commoditySumMap = new HashMap<String, Long>();
 		if(args.length != 1)
 		{
 			System.out.println("予期せぬエラーが発生しました");
@@ -39,13 +40,11 @@ public class CalculateSales
 			{
 				String[] braSpl = str.split(",", -1);
 				
-				for(int i = 0; i < braSpl.length; i++)
+				
+				if(braSpl.length != 2)
 				{
-					if(braSpl.length != 2)
-					{
-						System.out.println("支店名義ファイルのフォーマットが不正です");
-						return;
-					}
+					System.out.println("支店定義ファイルのフォーマットが不正です");
+					return;
 				}
 				
 				if(!braSpl[0].matches("^\\d{3}$"))
@@ -55,7 +54,7 @@ public class CalculateSales
 				}
 				
 				branchListMap.put(braSpl[0], braSpl[1]);
-				braSum.put(braSpl[0], 0L);
+				branchSumMap.put(braSpl[0], 0L);
 				
 			}
 		}
@@ -87,13 +86,11 @@ public class CalculateSales
 			while((s = brCommodityList.readLine()) != null)
 			{
 				String[] comSpl = s.split(",",-1);
-				for(int i = 0; i < comSpl.length; i++)
+
+				if(comSpl.length != 2)
 				{
-					if(comSpl.length != 2)
-					{
-						System.out.println("商品定義ファイルのフォーマットが不正です");
-						return;
-					}
+					System.out.println("商品定義ファイルのフォーマットが不正です");
+					return;
 				}
 				if(!comSpl[0].matches("^\\w{8}$"))
 				{
@@ -102,7 +99,7 @@ public class CalculateSales
 				}
 
 				commodityListMap.put(comSpl[0], comSpl[1]);
-				comSum.put(comSpl[0], 0L);
+				commoditySumMap.put(comSpl[0], 0L);
 
 			}
 		}
@@ -125,7 +122,7 @@ public class CalculateSales
 		}
 		
 		//rcdファイルだけ
-		File dir = new File(args[0] + File.separator);
+		File dir = new File(args[0]);
 		File files[] = dir.listFiles();
 
 		ArrayList<File> rcdList = new ArrayList<File>();
@@ -137,6 +134,11 @@ public class CalculateSales
 
 				//8桁
 				String[] fileSpl = files[i].getName().toString().split("\\.");
+				if(fileSpl.length != 2)
+				{
+					System.out.println("売上ファイル名が連番になっていません");
+					return;
+				}
 				int j = 0;
 				if(fileSpl[0].matches("^\\w{8}$"))
 				{
@@ -150,7 +152,7 @@ public class CalculateSales
 				}
 				else
 				{
-					System.out.println(files[i] + "は売上ファイル名が連番になっていません");
+					System.out.println("売上ファイル名が連番になっていません");
 					return;
 				}
 			}
@@ -179,36 +181,36 @@ public class CalculateSales
 				long salesSum = Long.parseLong(contensOfrcdFile.get(2));
 
 				//コード不正時のエラー処理
-				if(!braSum.containsKey(contensOfrcdFile.get(0)))
+				if(!branchSumMap.containsKey(contensOfrcdFile.get(0)))
 				{
 					System.out.println(rcdList.get(i).getName() + "の支店コードが不正です");
 					return;
 				}
 
-				if(!comSum.containsKey(contensOfrcdFile.get(1)))
+				if(!commoditySumMap.containsKey(contensOfrcdFile.get(1)))
 				{
-					System.out.println(rcdList.get(i).getName() + "商品のコードが不正です");
+					System.out.println(rcdList.get(i).getName() + "の商品コードが不正です");
 					return;
 				}
 
-				long bratotal = salesSum + braSum.get(contensOfrcdFile.get(0));
-				long comtotal = salesSum + comSum.get(contensOfrcdFile.get(1));
+				long bratotal = salesSum + branchSumMap.get(contensOfrcdFile.get(0));
+				long comtotal = salesSum + commoditySumMap.get(contensOfrcdFile.get(1));
 
-				braSum.put(contensOfrcdFile.get(0), bratotal);
-				comSum.put(contensOfrcdFile.get(1), comtotal);
+				branchSumMap.put(contensOfrcdFile.get(0), bratotal);
+				commoditySumMap.put(contensOfrcdFile.get(1), comtotal);
 
 				//10桁を超えた場合のエラー処理
 				String sbt = String.valueOf(bratotal);
 				if(sbt.length() > 10)
 				{
-					System.out.println(contensOfrcdFile.get(0) + "は合計金額が10桁を超えました");
+					System.out.println( "合計金額が10桁を超えました");
 					return;
 				}
 
 				String sct = String.valueOf(comtotal);
 				if(sct.length() > 10)
 				{
-					System.out.println(contensOfrcdFile.get(1) + "は合計金額が10桁を超えました");
+					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
 			}
@@ -232,7 +234,7 @@ public class CalculateSales
 		}
 
 		//支店別集計ファイルの出力
-		File branchOutFile = new File(args[0] + File.separator + "\\branch.out");
+		File branchOutFile = new File(args[0] + File.separator + "branch.out");
 		BufferedWriter bwBranchOut = null;
  		try
 		{
@@ -240,7 +242,7 @@ public class CalculateSales
 			bwBranchOut = new BufferedWriter(new FileWriter(branchOutFile));
 
 			List<Map.Entry<String,Long>> branchSumEntries =
-					new ArrayList<Map.Entry<String,Long>>(braSum.entrySet());
+					new ArrayList<Map.Entry<String,Long>>(branchSumMap.entrySet());
 			Collections.sort(branchSumEntries, new Comparator<Map.Entry<String,Long>>()
 			{
 				@Override
@@ -274,14 +276,14 @@ public class CalculateSales
  					
  		}
 		//商品別集計ファイルの出力
-		File commodityOutFile = new File(args[0], "\\commodity.out");
+		File commodityOutFile = new File(args[0], "commodity.out");
 		BufferedWriter bwCommodityOut =null;
 		try
 		{
 			commodityOutFile.createNewFile();
 			bwCommodityOut = new BufferedWriter(new FileWriter(commodityOutFile));
 
-			List<Map.Entry<String,Long>> commoditySumEntries = new ArrayList<Map.Entry<String,Long>>(comSum.entrySet());
+			List<Map.Entry<String,Long>> commoditySumEntries = new ArrayList<Map.Entry<String,Long>>(commoditySumMap.entrySet());
 			Collections.sort(commoditySumEntries, new Comparator<Map.Entry<String,Long>>()
 			{
 				@Override
