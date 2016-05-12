@@ -30,7 +30,7 @@ public class CalculateSales
 
 		//支店定義ファイル
 		HashMap<String, String> branchListMap = new HashMap<String, String>();
-		
+
 		BufferedReader brBranchList = null;
 		try
 		{
@@ -39,23 +39,23 @@ public class CalculateSales
 			while((str = brBranchList.readLine()) != null)
 			{
 				String[] braSpl = str.split(",", -1);
-				
-				
+
+
 				if(braSpl.length != 2)
 				{
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 					return;
 				}
-				
+
 				if(!braSpl[0].matches("^\\d{3}$"))
 				{
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 					return;
 				}
-				
+
 				branchListMap.put(braSpl[0], braSpl[1]);
 				branchSumMap.put(braSpl[0], 0L);
-				
+
 			}
 		}
 		catch(IOException e)
@@ -120,24 +120,26 @@ public class CalculateSales
 				return;
 			}
 		}
-		
+
 		//rcdファイルだけ
 		File dir = new File(args[0]);
 		File files[] = dir.listFiles();
-		
+
 
 		ArrayList<File> rcdList = new ArrayList<File>();
 
 		for(int i = 0; i < files.length; i++)
 		{
-			
-				if(files[i].getName().endsWith(".rcd"))
+
+			if(files[i].getName().endsWith(".rcd"))
 			{
+					
 
 				//8桁連番のファイルだけArrayListに格納
-				String[] fileSpl = files[i].getName().toString().split("\\.");
+				String[] fileSpl = files[i].getName().toString().split("\\.", -1);
 				int j = 0;
 				j = Integer.parseInt(fileSpl[0]);
+				  
 				if(files[i].isFile())
 				{
 					if(fileSpl.length == 2)
@@ -145,16 +147,16 @@ public class CalculateSales
 						if(fileSpl[0].matches("^\\w{8}$"))
 						{
 							rcdList.add(files[i]);
-						}	
+						}
 					}
 				}
-				if(j - 1 != i)
+				if(j - rcdList.size() != 0)
 				{
 					System.out.println("売上ファイル名が連番になっていません");
 					return;
 				}
-				
-			}	
+
+			}
 		}
 		//加算処理
 		BufferedReader brRcdFile = null;
@@ -271,7 +273,7 @@ public class CalculateSales
  			{
  				System.out.println("予期せぬエラーが発生しました");
  			}
- 					
+
  		}
 		//商品別集計ファイルの出力
 		File commodityOutFile = new File(args[0], "commodity.out");
