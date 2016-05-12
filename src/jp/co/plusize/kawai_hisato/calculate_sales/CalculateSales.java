@@ -144,7 +144,6 @@ public class CalculateSales
 						}
 					}
 				}
-				System.out.println(j);
 				if(j - rcdList.size() != 0)
 				{
 					System.out.println("売上ファイル名が連番になっていません");
