@@ -138,7 +138,7 @@ public class CalculateSales
 					j = Integer.parseInt(fileSpl[0]);
 					if(files[i].isFile())
 					{
-						if(fileSpl[0].matches("^\\w{8}$"))
+						if(fileSpl[0].matches("^\\d{8}$"))
 						{
 							rcdList.add(files[i]);
 						}
