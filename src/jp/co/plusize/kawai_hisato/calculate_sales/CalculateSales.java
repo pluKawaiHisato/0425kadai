@@ -216,7 +216,7 @@ public class CalculateSales
 		}
 		catch(IOException e)
 		{
-			System.out.println("予期せぬエラーが発生しました1");
+			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}
 		finally
@@ -227,7 +227,7 @@ public class CalculateSales
 			}
 			catch(IOException e)
 			{
-				System.out.println("予期せぬエラーが発生しました2");
+				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}
 		}
@@ -237,11 +237,6 @@ public class CalculateSales
 		BufferedWriter bwBranchOut = null;
  		try
 		{
-			if(!branchOutFile.createNewFile())
-			{
-				System.out.println("予期せぬエラーが発生しました22");
-				return;
-			}
 			bwBranchOut = new BufferedWriter(new FileWriter(branchOutFile));
 
 			List<Map.Entry<String,Long>> branchSumEntries =
@@ -263,7 +258,7 @@ public class CalculateSales
 		}
 		catch(IOException e)
 		{
-			System.out.println("予期せぬエラーが発生しました3");
+			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}
  		finally
@@ -274,7 +269,7 @@ public class CalculateSales
  			}
  			catch(IOException e)
  			{
- 				System.out.println("予期せぬエラーが発生しました4");
+ 				System.out.println("予期せぬエラーが発生しました");
  			}
  					
  		}
@@ -283,11 +278,6 @@ public class CalculateSales
 		BufferedWriter bwCommodityOut =null;
 		try
 		{
-			if(!commodityOutFile.createNewFile())
-			{
-				System.out.println("予期せぬエラーが発生しました5");
-				return;
-			}
 			bwCommodityOut = new BufferedWriter(new FileWriter(commodityOutFile));
 
 			List<Map.Entry<String,Long>> commoditySumEntries = new ArrayList<Map.Entry<String,Long>>(commoditySumMap.entrySet());
@@ -309,7 +299,7 @@ public class CalculateSales
 		}
 		catch(IOException e)
 		{
-			System.out.println("予期せぬエラーが発生しました6");
+			System.out.println("予期せぬエラーが発生しました");
 		}
 		finally
 		{
@@ -319,7 +309,7 @@ public class CalculateSales
 			}
 			catch(IOException e)
 			{
-				System.out.println("予期せぬエラーが発生しました7");
+				System.out.println("予期せぬエラーが発生しました");
 			}
 		}
 	}
