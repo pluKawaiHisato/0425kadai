@@ -121,28 +121,22 @@ public class CalculateSales
 			}
 		}
 
-		//rcdファイルだけ
+		//rcd8桁連番のファイルだけArrayListに格納
 		File dir = new File(args[0]);
 		File files[] = dir.listFiles();
-
 
 		ArrayList<File> rcdList = new ArrayList<File>();
 
 		for(int i = 0; i < files.length; i++)
 		{
-
 			if(files[i].getName().endsWith(".rcd"))
 			{
-					
-
-				//8桁連番のファイルだけArrayListに格納
 				String[] fileSpl = files[i].getName().toString().split("\\.", -1);
 				int j = 0;
-				j = Integer.parseInt(fileSpl[0]);
-				  
-				if(files[i].isFile())
+				if(fileSpl.length == 2)
 				{
-					if(fileSpl.length == 2)
+					j = Integer.parseInt(fileSpl[0]);
+					if(files[i].isFile())
 					{
 						if(fileSpl[0].matches("^\\w{8}$"))
 						{
@@ -150,12 +144,12 @@ public class CalculateSales
 						}
 					}
 				}
+				System.out.println(j);
 				if(j - rcdList.size() != 0)
 				{
 					System.out.println("売上ファイル名が連番になっていません");
 					return;
 				}
-
 			}
 		}
 		//加算処理
