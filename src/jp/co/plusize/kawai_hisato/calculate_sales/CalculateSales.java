@@ -67,7 +67,10 @@ public class CalculateSales
 		{
 			try
 			{
-				brBranchList.close();
+				if(brBranchList != null)
+				{
+					brBranchList.close();
+				}
 			}
 			catch(IOException e)
 			{
@@ -112,7 +115,10 @@ public class CalculateSales
 		{
 			try
 			{
-				brCommodityList.close();
+				if(brCommodityList != null)
+				{
+					brCommodityList.close();
+				}
 			}
 			catch(IOException e)
 			{
@@ -218,7 +224,13 @@ public class CalculateSales
 		{
 			try
 			{
-				brRcdFile.close();
+				if(brRcdFile != null)
+				{
+					if(brRcdFile != null)
+					{
+						brRcdFile.close();
+					}
+				}
 			}
 			catch(IOException e)
 			{
@@ -260,7 +272,10 @@ public class CalculateSales
  		{
  			try
  			{
- 				bwBranchOut.close();
+ 				if(bwBranchOut != null)
+ 				{
+ 					bwBranchOut.close();
+ 				}
  			}
  			catch(IOException e)
  			{
@@ -300,7 +315,10 @@ public class CalculateSales
 		{
 			try
 			{
-				bwCommodityOut.close();
+				if(bwCommodityOut != null)
+				{
+					bwCommodityOut.close();
+				}
 			}
 			catch(IOException e)
 			{
