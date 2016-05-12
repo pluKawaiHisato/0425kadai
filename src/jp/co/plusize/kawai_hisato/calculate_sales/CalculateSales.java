@@ -124,38 +124,37 @@ public class CalculateSales
 		//rcdファイルだけ
 		File dir = new File(args[0]);
 		File files[] = dir.listFiles();
+		
 
 		ArrayList<File> rcdList = new ArrayList<File>();
 
 		for(int i = 0; i < files.length; i++)
 		{
-			if(files[i].getName().endsWith(".rcd"))
+			
+				if(files[i].getName().endsWith(".rcd"))
 			{
 
-				//8桁
+				//8桁連番のファイルだけArrayListに格納
 				String[] fileSpl = files[i].getName().toString().split("\\.");
-				if(fileSpl.length != 2)
+				int j = 0;
+				j = Integer.parseInt(fileSpl[0]);
+				if(files[i].isFile())
+				{
+					if(fileSpl.length == 2)
+					{
+						if(fileSpl[0].matches("^\\w{8}$"))
+						{
+							rcdList.add(files[i]);
+						}	
+					}
+				}
+				if(j - 1 != i)
 				{
 					System.out.println("売上ファイル名が連番になっていません");
 					return;
-				}
-				int j = 0;
-				if(fileSpl[0].matches("^\\w{8}$"))
-				{
-					 j = Integer.parseInt(fileSpl[0]);
 				}
 				
-				//連番処理
-				if(j - 1 == i)
-				{
-					rcdList.add(files[i]);
-				}
-				else
-				{
-					System.out.println("売上ファイル名が連番になっていません");
-					return;
-				}
-			}
+			}	
 		}
 		//加算処理
 		BufferedReader brRcdFile = null;
@@ -217,7 +216,7 @@ public class CalculateSales
 		}
 		catch(IOException e)
 		{
-			System.out.println("予期せぬエラーが発生しました");
+			System.out.println("予期せぬエラーが発生しました1");
 			return;
 		}
 		finally
@@ -228,7 +227,7 @@ public class CalculateSales
 			}
 			catch(IOException e)
 			{
-				System.out.println("予期せぬエラーが発生しました");
+				System.out.println("予期せぬエラーが発生しました2");
 				return;
 			}
 		}
@@ -238,7 +237,11 @@ public class CalculateSales
 		BufferedWriter bwBranchOut = null;
  		try
 		{
-			branchOutFile.createNewFile();
+			if(!branchOutFile.createNewFile())
+			{
+				System.out.println("予期せぬエラーが発生しました22");
+				return;
+			}
 			bwBranchOut = new BufferedWriter(new FileWriter(branchOutFile));
 
 			List<Map.Entry<String,Long>> branchSumEntries =
@@ -260,7 +263,7 @@ public class CalculateSales
 		}
 		catch(IOException e)
 		{
-			System.out.println("予期せぬエラーが発生しました");
+			System.out.println("予期せぬエラーが発生しました3");
 			return;
 		}
  		finally
@@ -271,7 +274,7 @@ public class CalculateSales
  			}
  			catch(IOException e)
  			{
- 				System.out.println("予期せぬエラーが発生しました");
+ 				System.out.println("予期せぬエラーが発生しました4");
  			}
  					
  		}
@@ -280,7 +283,11 @@ public class CalculateSales
 		BufferedWriter bwCommodityOut =null;
 		try
 		{
-			commodityOutFile.createNewFile();
+			if(!commodityOutFile.createNewFile())
+			{
+				System.out.println("予期せぬエラーが発生しました5");
+				return;
+			}
 			bwCommodityOut = new BufferedWriter(new FileWriter(commodityOutFile));
 
 			List<Map.Entry<String,Long>> commoditySumEntries = new ArrayList<Map.Entry<String,Long>>(commoditySumMap.entrySet());
@@ -302,7 +309,7 @@ public class CalculateSales
 		}
 		catch(IOException e)
 		{
-			System.out.println("予期せぬエラーが発生しました");
+			System.out.println("予期せぬエラーが発生しました6");
 		}
 		finally
 		{
@@ -312,7 +319,7 @@ public class CalculateSales
 			}
 			catch(IOException e)
 			{
-				System.out.println("予期せぬエラーが発生しました");
+				System.out.println("予期せぬエラーが発生しました7");
 			}
 		}
 	}
