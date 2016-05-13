@@ -178,10 +178,10 @@ public class CalculateSales
 			if(files[i].getName().endsWith(".rcd"))
 			{
 				String[] split = files[i].getName().toString().split("\\.", -1);
-				int j = 0;
+				int integerRcdFile = 0;
 				if(split.length == 2)
 				{
-					j = Integer.parseInt(split[0]);
+					integerRcdFile = Integer.parseInt(split[0]);
 					if(files[i].isFile())
 					{
 						if(split[0].matches("^\\d{8}$"))
@@ -190,7 +190,7 @@ public class CalculateSales
 						}
 					}
 				}
-				if(j - rcdList.size() != 0)
+				if(integerRcdFile  - rcdList.size() != 0)
 				{
 					System.out.println("売上ファイル名が連番になっていません");
 					return false;
@@ -238,16 +238,12 @@ public class CalculateSales
 				commoditySumMap.put(contensOfrcdFile.get(1), commodityTotal);
 
 				//10桁を超えた場合のエラー処理
-				//String strBranchTotal = String.valueOf(branchTotal);
-				//if(strBranchTotal.length() > 10)
 				if(salesSum + branchTotal > 9999999999L)
 				{
 					System.out.println( "合計金額が10桁を超えました");
 					return false;
 				}
 
-				//String strCommodityTotal = String.valueOf(commodityTotal);
-				//if(strCommodityTotal.length() > 10)
 				if(salesSum + commodityTotal > 9999999999L)
 				{
 					System.out.println("合計金額が10桁を超えました");
