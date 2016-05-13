@@ -24,6 +24,7 @@ public class CalculateSales
 		HashMap<String, Long> commoditySumMap = new HashMap<String, Long>();
 		if(args.length != 1)
 		{
+			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}
 
@@ -51,7 +52,6 @@ public class CalculateSales
 		//支店別集計ファイルの出力
 		if(!fileWrite(args[0], "branch.out", branchSumMap, branchListMap))
 		{
-			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}
 		
@@ -164,6 +164,8 @@ public class CalculateSales
  		}
  		return true;
 	}
+	
+	//rcd8桁連番のファイルだけArrayListに格納して加算処理
 	private static boolean sumSales(String path, HashMap<String, Long> branchSumMap, HashMap<String, Long> commoditySumMap)
 	{
 		File dir = new File(path);
@@ -175,14 +177,14 @@ public class CalculateSales
 		{
 			if(files[i].getName().endsWith(".rcd"))
 			{
-				String[] fileSpl = files[i].getName().toString().split("\\.", -1);
+				String[] split = files[i].getName().toString().split("\\.", -1);
 				int j = 0;
-				if(fileSpl.length == 2)
+				if(split.length == 2)
 				{
-					j = Integer.parseInt(fileSpl[0]);
+					j = Integer.parseInt(split[0]);
 					if(files[i].isFile())
 					{
-						if(fileSpl[0].matches("^\\d{8}$"))
+						if(split[0].matches("^\\d{8}$"))
 						{
 							rcdList.add(files[i]);
 						}
@@ -195,19 +197,17 @@ public class CalculateSales
 				}
 			}
 		}
-		//加算処理
-		BufferedReader brRcdFile = null;
+		BufferedReader br = null;
 		try
 		{
 			for(int i = 0; i < rcdList.size(); i++)
 			{
-				String listStr = rcdList.get(i).toString();
-				brRcdFile = new BufferedReader(new FileReader(new File(listStr)));
-				String sale;
+				String str = rcdList.get(i).toString();
+				br = new BufferedReader(new FileReader(new File(str)));
 				ArrayList<String> contensOfrcdFile= new ArrayList<String>();
-				while((sale = brRcdFile.readLine()) !=null)
+				while((str = br.readLine()) !=null)
 				{
-					contensOfrcdFile.add(sale);
+					contensOfrcdFile.add(str);
 				}
 
 				if(contensOfrcdFile.size() != 3)
@@ -231,22 +231,24 @@ public class CalculateSales
 					return false;
 				}
 
-				long bratotal = salesSum + branchSumMap.get(contensOfrcdFile.get(0));
-				long comtotal = salesSum + commoditySumMap.get(contensOfrcdFile.get(1));
+				long branchTotal = salesSum + branchSumMap.get(contensOfrcdFile.get(0));
+				long commodityTotal = salesSum + commoditySumMap.get(contensOfrcdFile.get(1));
 
-				branchSumMap.put(contensOfrcdFile.get(0), bratotal);
-				commoditySumMap.put(contensOfrcdFile.get(1), comtotal);
+				branchSumMap.put(contensOfrcdFile.get(0), branchTotal);
+				commoditySumMap.put(contensOfrcdFile.get(1), commodityTotal);
 
 				//10桁を超えた場合のエラー処理
-				String sbt = String.valueOf(bratotal);
-				if(sbt.length() > 10)
+				//String strBranchTotal = String.valueOf(branchTotal);
+				//if(strBranchTotal.length() > 10)
+				if(salesSum + branchTotal > 9999999999L)
 				{
 					System.out.println( "合計金額が10桁を超えました");
 					return false;
 				}
 
-				String sct = String.valueOf(comtotal);
-				if(sct.length() > 10)
+				//String strCommodityTotal = String.valueOf(commodityTotal);
+				//if(strCommodityTotal.length() > 10)
+				if(salesSum + commodityTotal > 9999999999L)
 				{
 					System.out.println("合計金額が10桁を超えました");
 					return false;
@@ -262,9 +264,9 @@ public class CalculateSales
 		{
 			try
 			{
-			if(brRcdFile != null)
+			if(br != null)
 				{
-					brRcdFile.close();
+					br.close();
 				}
 			}
 			catch(IOException e)
@@ -276,4 +278,3 @@ public class CalculateSales
 		return true;
 	}
 }
-
