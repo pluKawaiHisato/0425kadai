@@ -30,7 +30,7 @@ public class CalculateSales
 
 		//支店定義ファイル
 		HashMap<String, String> branchListMap = new HashMap<String, String>();
-		if(!fileRead (args[0], "branch.lst", "支店", "^\\d{3}$", branchSumMap, branchListMap))
+		if(!readDefinitionFile (args[0] + File.separator + "branch.lst", "支店", "^\\d{3}$", branchSumMap, branchListMap))
 		{
 			return;
 		}
@@ -38,7 +38,7 @@ public class CalculateSales
 
 		//商品定義ファイル
 		HashMap<String, String> commodityListMap = new HashMap<String, String>();
-		if(!fileRead(args[0], "commodity.lst", "商品", "^\\w{8}$", commoditySumMap, commodityListMap))
+		if(!readDefinitionFile(args[0] + File.separator + "commodity.lst", "商品", "^\\w{8}$", commoditySumMap, commodityListMap))
 		{
 			return;
 		}
@@ -50,13 +50,13 @@ public class CalculateSales
 		}
 
 		//支店別集計ファイルの出力
-		if(!fileWrite(args[0], "branch.out", branchSumMap, branchListMap))
+		if(!outSumFile(args[0] + File.separator + "branch.out", branchSumMap, branchListMap))
 		{
 			return;
 		}
 		
 		//商品別集計ファイルの出力
-		if(!fileWrite(args[0], "commodity.out", commoditySumMap, commodityListMap))
+		if(!outSumFile(args[0] + File.separator + "commodity.out", commoditySumMap, commodityListMap))
 		{
 			return;
 		}
@@ -64,12 +64,12 @@ public class CalculateSales
 
 	//メソッド分け
 	//定義ファイル読み込み
-	private static boolean fileRead(String path, String filename, String nameTag, String preg, HashMap<String, Long> sumMap, HashMap<String, String> listMap)
+	private static boolean readDefinitionFile(String filename, String nameTag, String preg, HashMap<String, Long> sumMap, HashMap<String, String> listMap)
 	{
 		BufferedReader br = null;
 		try
 		{
-			br = new BufferedReader(new FileReader(new File (path + File.separator + filename)));
+			br = new BufferedReader(new FileReader(new File (filename)));
 			String str;
 			while((str = br.readLine()) != null)
 			{
@@ -116,13 +116,12 @@ public class CalculateSales
 	}
 	
 	//集計結果出力
-	private static boolean fileWrite(String path, String fileName, HashMap<String, Long> sumMap, HashMap<String, String> listMap)
+	private static boolean outSumFile( String fileName, HashMap<String, Long> sumMap, HashMap<String, String> listMap)
 	{
-		File OutFile = new File(path + File.separator + fileName);
 		BufferedWriter bw = null;
  		try
 		{
-			bw = new BufferedWriter(new FileWriter(OutFile));
+			bw = new BufferedWriter(new FileWriter( new File(fileName)));
 
 			List<Map.Entry<String,Long>> Entries =
 					new ArrayList<Map.Entry<String,Long>>(sumMap.entrySet());
