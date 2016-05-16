@@ -203,38 +203,38 @@ public class CalculateSales
 			{
 				String str = rcdList.get(i).toString();
 				br = new BufferedReader(new FileReader(new File(str)));
-				ArrayList<String> contensOfrcdFile= new ArrayList<String>();
+				ArrayList<String> contensOfrcdFileList= new ArrayList<String>();
 				while((str = br.readLine()) !=null)
 				{
-					contensOfrcdFile.add(str);
+					contensOfrcdFileList.add(str);
 				}
 
-				if(contensOfrcdFile.size() != 3)
+				if(contensOfrcdFileList.size() != 3)
 				{
 					System.out.println(rcdList.get(i).getName() + "のフォーマットが不正です");
 					return false;
 				}
 
-				long salesSum = Long.parseLong(contensOfrcdFile.get(2));
+				long salesSum = Long.parseLong(contensOfrcdFileList.get(2));
 
 				//コード不正時のエラー処理
-				if(!branchSumMap.containsKey(contensOfrcdFile.get(0)))
+				if(!branchSumMap.containsKey(contensOfrcdFileList.get(0)))
 				{
 					System.out.println(rcdList.get(i).getName() + "の支店コードが不正です");
 					return false;
 				}
 
-				if(!commoditySumMap.containsKey(contensOfrcdFile.get(1)))
+				if(!commoditySumMap.containsKey(contensOfrcdFileList.get(1)))
 				{
 					System.out.println(rcdList.get(i).getName() + "の商品コードが不正です");
 					return false;
 				}
 
-				long branchTotal = salesSum + branchSumMap.get(contensOfrcdFile.get(0));
-				long commodityTotal = salesSum + commoditySumMap.get(contensOfrcdFile.get(1));
+				long branchTotal = salesSum + branchSumMap.get(contensOfrcdFileList.get(0));
+				long commodityTotal = salesSum + commoditySumMap.get(contensOfrcdFileList.get(1));
 
-				branchSumMap.put(contensOfrcdFile.get(0), branchTotal);
-				commoditySumMap.put(contensOfrcdFile.get(1), commodityTotal);
+				branchSumMap.put(contensOfrcdFileList.get(0), branchTotal);
+				commoditySumMap.put(contensOfrcdFileList.get(1), commodityTotal);
 
 				//10桁を超えた場合のエラー処理
 				if(salesSum + branchTotal > 9999999999L)
